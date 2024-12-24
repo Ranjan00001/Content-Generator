@@ -1,0 +1,15 @@
+{
+    "download_url": "/api/v1/presentations/d1848979-44dd-405d-a744-b8fadcfaa00f/download",
+    "id": "d1848979-44dd-405d-a744-b8fadcfaa00f",
+    "layouts": [
+        "bullet_points",
+        "bullet_points",
+        "bullet_points",
+        "bullet_points",
+        "bullet_points"
+    ],
+    "num_slides": 5,
+    "status": "created",
+    "theme": "default",
+    "topic": "AI"
+}

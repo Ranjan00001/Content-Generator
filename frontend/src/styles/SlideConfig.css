@@ -1,0 +1,28 @@
+/* src/styles/SlideConfig.css */
+
+.slide-config {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .slide-config-label {
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .react-select__control {
+    border-color: #ccc;
+    border-radius: 4px;
+  }
+  
+  .react-select__control--is-focused {
+    border-color: #3498db;
+    box-shadow: 0 0 0 1px #3498db;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  

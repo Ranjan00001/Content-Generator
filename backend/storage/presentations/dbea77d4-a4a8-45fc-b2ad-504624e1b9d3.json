@@ -1,0 +1,15 @@
+{
+    "download_url": "/api/v1/presentations/dbea77d4-a4a8-45fc-b2ad-504624e1b9d3/download",
+    "id": "dbea77d4-a4a8-45fc-b2ad-504624e1b9d3",
+    "layouts": [
+        "title",
+        "bullet_points",
+        "content_with_image",
+        "bullet_points",
+        "bullet_points"
+    ],
+    "num_slides": 5,
+    "status": "updated",
+    "theme": "default",
+    "topic": "Artificial Intelligence"
+}

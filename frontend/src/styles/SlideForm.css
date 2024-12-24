@@ -1,0 +1,136 @@
+/* src/styles/SlideForm.css */
+
+.slide-form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+  
+  .slide-form-title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+  }
+  
+  .slide-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-group label {
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .form-input,
+  .form-select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .input-error {
+    border-color: #e74c3c;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    margin-top: 5px;
+    font-size: 14px;
+  }
+  
+  .section-title {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .submit-button {
+    padding: 12px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submit-button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+  }
+  
+  .error-container {
+    background-color: #fcebea;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+  }
+  
+  .error-text {
+    color: #e74c3c;
+  }
+  
+  .download-container {
+    background-color: #eafaf1;
+    padding: 10px;
+    border: 1px solid #c3e6cb;
+    border-radius: 4px;
+  }
+  
+  .success-text {
+    color: #28a745;
+  }
+  
+  .download-button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 16px;
+    background-color: #28a745;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .download-button:hover {
+    background-color: #218838;
+  }
+  
+
+  .details-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #3498db; /* Blue background */
+    color: #fff; /* White text */
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .details-link:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight upward movement */
+  }
+  
+  .details-link:active {
+    background-color: #1c5980; /* Even darker blue on click */
+    transform: translateY(0); /* Reset position */
+  }
+  
+  .details-link:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.5); /* Focus ring */
+  }
