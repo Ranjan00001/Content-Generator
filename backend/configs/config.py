@@ -21,3 +21,5 @@ themes = {
         "background_color": "EAF2F8"  # Light Blue
     }
 }
+
+supported_layouts = {"title", "bullet_points", "two_column", "content_with_image"}

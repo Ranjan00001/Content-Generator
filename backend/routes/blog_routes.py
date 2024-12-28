@@ -1,9 +1,8 @@
 from flask import jsonify, request, Blueprint
-from services.chat_service import (
+from services.blog_service import (
     session_state,
     get_response_text,
     initial_prompt,
-    extract_revised_prompt,
     model,
 )
 from models.generative_model import extract_revised_prompt_and_questions, ModelResponseKeys, format_model_response
