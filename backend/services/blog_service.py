@@ -9,7 +9,7 @@ session_state = {
 # Define the initial prompt
 initial_prompt = (
     'I want you to become my prompt engineer. Your objective is to assist me in creating the most '
-    'effective prompt tailored to my requirements. This prompt will be used by you, ChatGPT. '
+    'effective prompt tailored to my requirements. This prompt will be used by you. '
     'Follow these steps:\n1. In your first response, ask me what the prompt should be about. '
     'I will provide my answer, and we will improve it through continual iterations using the following steps. '
     '2. Based on my input, generate two sections:\n  a) Revised Prompt: Provide your rewritten prompt, which '
