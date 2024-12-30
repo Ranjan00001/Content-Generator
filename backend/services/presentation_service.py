@@ -29,15 +29,15 @@ class PresentationService:
         fill.solid()
         fill.fore_color.rgb = self.hex_to_rgbcolor(hex_color)
 
-    def add_text(self, slide, text, font_name, font_size, position, color="000000"):
-        textbox = slide.shapes.add_textbox(*position)
-        text_frame = textbox.text_frame
-        text_frame.word_wrap = True
-        p = text_frame.add_paragraph()
-        p.text = text
-        p.font.name = font_name
-        p.font.size = Pt(font_size)
-        p.font.color.rgb = self.hex_to_rgbcolor(color)
+    # def add_text(self, slide, text, font_name, font_size, position, color="000000"):
+    #     textbox = slide.shapes.add_textbox(*position)
+    #     text_frame = textbox.text_frame
+    #     text_frame.word_wrap = True
+    #     p = text_frame.add_paragraph()
+    #     p.text = text
+    #     p.font.name = font_name
+    #     p.font.size = Pt(font_size)
+    #     p.font.color.rgb = self.hex_to_rgbcolor(color)
 
     def add_bullet_points(self, slide, points, font_name, font_size, position, color="333333"):
         textbox = slide.shapes.add_textbox(*position)
@@ -74,7 +74,7 @@ class PresentationService:
         """
         # Generate the prompt using the helper function
         prompt = generate_slide_prompts(topic, num_slides, layouts)
-        print('prompt', prompt)
+        # print('prompt', prompt)
         # Generate content using the model
         try:
             response = self.model.generate_content(prompt).to_dict()
@@ -83,6 +83,7 @@ class PresentationService:
             raise RuntimeError("Content generation failed") from e
 
         text = response['candidates'][0]['content']['parts'][0]['text'][7:-5]
+        slide_data = []
         try:
             # Parse response text as JSON
             slide_data = json.loads(text)
@@ -112,14 +113,7 @@ class PresentationService:
                 title_shape.text_frame.paragraphs[0].font.size = Pt(theme["font_size"] + 10)
                 title_shape.text_frame.paragraphs[0].font.color.rgb = self.hex_to_rgbcolor(theme["title_color"])
                 if "subtitle" in slide_content:
-                    self.add_text(
-                        slide,
-                        slide_content["subtitle"],
-                        theme["font"],
-                        theme["font_size"],
-                        (Inches(1), Inches(3), Inches(8), Inches(1)),
-                        theme["content_color"]
-                    )
+                    slide.placeholders[1].text = slide_content['subtitle']
 
             elif layout == SlideLayout.BULLET_POINTS.value:
                 slide = prs.slides.add_slide(prs.slide_layouts[1])
@@ -144,14 +138,11 @@ class PresentationService:
             elif layout == SlideLayout.TWO_COLUMN.value:
                 slide = prs.slides.add_slide(prs.slide_layouts[5])
                 self.set_slide_background(slide, theme["background_color"])
-                self.add_text(
-                    slide,
-                    slide_content["title"],
-                    theme["font"],
-                    theme["font_size"] + 5,
-                    (Inches(1), Inches(0.5), Inches(8), Inches(1)),
-                    theme["title_color"]
-                )
+                title_shape = slide.shapes.title
+                title_shape.text = slide_content["title"]
+                title_shape.text_frame.paragraphs[0].font.name = theme["font"]
+                title_shape.text_frame.paragraphs[0].font.size = Pt(theme["font_size"] + 5)
+                title_shape.text_frame.paragraphs[0].font.color.rgb = self.hex_to_rgbcolor(theme["title_color"])
                 left_box = slide.shapes.add_textbox(Inches(1), Inches(1.7), Inches(4), Inches(4))
                 left_tf = left_box.text_frame
                 left_tf.word_wrap = True
@@ -177,24 +168,27 @@ class PresentationService:
             elif layout == SlideLayout.CONTENT_WITH_IMAGE.value:
                 slide = prs.slides.add_slide(prs.slide_layouts[5])
                 self.set_slide_background(slide, theme["background_color"])
-                self.add_text(
-                    slide,
-                    slide_content["title"],
-                    theme["font"],
-                    theme["font_size"] + 5,
-                    (Inches(1), Inches(0.5), Inches(8), Inches(1)),
-                    theme["title_color"]
-                )
+
+                title_shape = slide.shapes.title
+                title_shape.text = slide_content["title"]
+                title_shape.text_frame.paragraphs[0].font.name = theme["font"]
+                title_shape.text_frame.paragraphs[0].font.size = Pt(theme["font_size"] + 5)
+                title_shape.text_frame.paragraphs[0].font.color.rgb = self.hex_to_rgbcolor(theme["title_color"])
+                
                 content_box = slide.shapes.add_textbox(Inches(1), Inches(1.7), Inches(5), Inches(4))
                 content_tf = content_box.text_frame
                 content_tf.word_wrap = True
-                for line in slide_content.get("content", []):
-                    p = content_tf.add_paragraph()
-                    p.text = line
-                    p.bullet = True
-                    p.font.name = theme["font"]
-                    p.font.size = Pt(theme["font_size"])
-                    p.font.color.rgb = self.hex_to_rgbcolor(theme["content_color"])
+                # for line in slide_content.get("content", []):
+                #     p = content_tf.add_paragraph()
+                #     p.text = line
+                #     p.bullet = True
+                #     p.font.name = theme["font"]
+                #     p.font.size = Pt(theme["font_size"])
+                #     p.font.color.rgb = self.hex_to_rgbcolor(theme["content_color"])
+                content_tf.text = slide_content['content']
+                content_tf.paragraphs[0].font.name = theme["font"]
+                content_tf.paragraphs[0].font.size = Pt(theme["font_size"] + 5)
+                content_tf.paragraphs[0].font.color.rgb = self.hex_to_rgbcolor(theme["title_color"])
 
                 image_path = slide_content.get("image_path")
                 if image_path and os.path.exists(image_path):

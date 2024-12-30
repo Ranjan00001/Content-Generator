@@ -9,11 +9,13 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 genai.configure(api_key=GEMINI_API_KEY)
 
-class SlideLayout(Enum):
-    TITLE = "title"
-    BULLET_POINTS = "bullet_points"
-    TWO_COLUMN = "two_column"
-    CONTENT_WITH_IMAGE = "content_with_image"
+# class SlideLayout(Enum):
+#     TITLE = "title"
+#     BULLET_POINTS = "bullet_points"
+#     TWO_COLUMN = "two_column"
+#     CONTENT_WITH_IMAGE = "content_with_image"
+
+SlideLayout = Enum('SlideLayout', {layout.upper(): layout for layout in supported_layouts})
 
 class ModelResponseKeys(Enum):
     """Enum for standard response structure."""

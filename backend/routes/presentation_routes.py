@@ -91,7 +91,7 @@ class PresentationController:
 
         try:
             content = service.fetch_content_from_gemini(topic, num_slides, layouts)
-            print('here',content)
+            # print('here',content)
             prs = service.create_presentation(content, theme_name=theme)
         except Exception as e:
             logger.error("Error creating presentation: %s", e)
@@ -99,7 +99,7 @@ class PresentationController:
 
         presentation_id = str(uuid.uuid4())
         try:
-            self._save_presentation(prs, presentation_id)
+            self._save_presentation(prs, presentation_id)   # Saving .pptx file
             presentation_details = {
                 "id": presentation_id,
                 "topic": topic,
@@ -108,8 +108,9 @@ class PresentationController:
                 "layouts": layouts,
                 "status": "created",
                 "download_url": f"/api/v1/presentations/{presentation_id}/download",
+                # "silde_data": content
             }
-            self._save_presentation_details(presentation_id, presentation_details)
+            self._save_presentation_details(presentation_id, presentation_details)  # Saving the metadata about slide
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
