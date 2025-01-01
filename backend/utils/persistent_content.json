@@ -1,0 +1,27 @@
+{
+    "user_id": {
+      "type": "string",
+      "description": "The ID of the user associated with this content."
+    },
+    "content_type": {
+      "type": "string",
+      "description": "Type of content (e.g., blog, presentation)."
+    },
+    "content": {
+      "type": "string",
+      "description": "The actual content stored as text."
+    },
+    "additional_info": {
+      "type": "object",
+      "description": "Additional information, such as tone or style preferences.",
+      "properties": {
+        "tone": { "type": "string" },
+        "keywords": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "description": "Timestamp when the content was created, stored in ISO format."
+    }
+  }
+  

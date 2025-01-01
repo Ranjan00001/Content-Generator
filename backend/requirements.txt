@@ -1,5 +1,9 @@
 Flask
 python-pptx
 flask-cors
+flask_sqlalchemy
 google-generativeai>=0.8.3
 python-dotenv
+redis==5.0.0
+pymongo[srv]==4.7.0
+psycopg2==2.9.7
