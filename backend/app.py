@@ -35,6 +35,7 @@ CORS(
 )
 
 # Register Blueprints
+# Test
 app.register_blueprint(presentation_routes, url_prefix="/api/v1/presentations")
 app.register_blueprint(blog_routes, url_prefix="/api/v1/blog")
 # app.register_blueprint(chat_routes, url_prefix="/api/v1/chat")
