@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import ARRAY
+from pgvector.sqlalchemy import Vector
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -9,7 +9,7 @@ class VectorEmbedding(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.String(255), nullable=False)  # User ID
     mongo_doc_id = db.Column(db.String(255), nullable=False, unique=True)  # MongoDB document ID
-    embedding = db.Column(ARRAY(db.Float), nullable=False, index=True)  # Vector embedding
+    embedding = db.Column(Vector(1024), nullable=False)  # Vector embedding
     content_type = db.Column(db.String(50), nullable=False)  # Content type (e.g., blog, presentation)
     additional_info = db.Column(db.String(255), nullable=True)  # Additional contextual info
     created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)  # Timestamp

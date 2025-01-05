@@ -5,6 +5,8 @@ import os
 import logging
 from routes.presentation_routes import presentation_routes
 from routes.blog_routes import blog_routes
+from routes.memory_routes import memory_routes
+from routes.chat_routes import chat_routes
 from utils.database import db
 
 # Load environment variables
@@ -37,7 +39,8 @@ CORS(
 # Register Blueprints
 app.register_blueprint(presentation_routes, url_prefix="/api/v1/presentations")
 app.register_blueprint(blog_routes, url_prefix="/api/v1/blog")
-# app.register_blueprint(chat_routes, url_prefix="/api/v1/chat")
+# app.register_blueprint(memory_routes, url_prefix = "/api/v1/memory")
+app.register_blueprint(chat_routes, url_prefix="/api/v1/chat")
 # app.register_blueprint(reel_routes, url_prefix="/api/v1/reels")
 # app.register_blueprint(image_routes, url_prefix="/api/v1/images")
 # app.register_blueprint(video_routes, url_prefix="/api/v1/videos")
@@ -78,7 +81,7 @@ def index():
 with app.app_context():
     try:
         db.create_all()  # Create all tables if they don't exist
-        logger.info("Database tables created successfully.")
+        logger.info("All database tables are existing now!.")
     except Exception as e:
         logger.error(f"Error creating database tables: {e}")
 

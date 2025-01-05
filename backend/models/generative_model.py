@@ -15,6 +15,11 @@ genai.configure(api_key=GEMINI_API_KEY)
 #     TWO_COLUMN = "two_column"
 #     CONTENT_WITH_IMAGE = "content_with_image"
 
+class Intent(Enum):
+    BLOG_GENERATION = "blog_generation"
+    PRESENTATION_GENERATION = "presentation_generation"
+    UNKNOWN = "unknown"
+
 SlideLayout = Enum('SlideLayout', {layout.upper(): layout for layout in supported_layouts})
 
 class ModelResponseKeys(Enum):
@@ -28,6 +33,32 @@ model = genai.GenerativeModel('gemini-1.5-flash')
 def get_model():
     """Returns the generative model instance."""
     return model
+
+def reason_out_intent(model, query):
+    try:
+        if not query:
+            raise ValueError("Prompt is empty. Unable to determine intent.")
+
+        reasoning_prompt = (
+            "Given the following query, determine if the intent is for generating a blog or a presentation. "
+            "Respond with one of the following intents: 'blog_generation', 'presentation_generation', or 'unknown'.\n"
+            f"Query: {query}\n"
+            "Your response should be a single word from the options: 'blog_generation', 'presentation_generation', 'unknown'."
+        )
+
+        response = model.generate_content(reasoning_prompt).to_dict()
+        # print(response)
+        response_text = response['candidates'][0]['content']['parts'][0]['text'].strip()
+        # print(response_text)
+        # print([intent.value for intent in Intent])
+        intent = Intent.UNKNOWN.value
+        if response_text in [intent.value for intent in Intent]:
+            intent = response_text
+
+        return {"intent": intent}
+
+    except Exception as e:
+        return {"intent": Intent.UNKNOWN.value, "error": str(e)}
 
 def format_model_response(revised_prompt: str, questions: str) -> dict:
     """
