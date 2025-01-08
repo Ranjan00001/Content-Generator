@@ -43,11 +43,12 @@ class ChatController:
 
                 if not user_feedback:
                     embeddings = self.memory_service.query_embeddings(user_id="user123", content_type="blog")
+
                     nearest_embeddings = sorted(
                         embeddings,
                         key=lambda x: F.cosine_similarity(
-                            torch.tensor(query_embedding, dtype=torch.float32),
-                            torch.tensor(x.embedding, dtype=torch.float32)
+                            torch.tensor(query_embedding, dtype=torch.float32).unsqueeze(0),
+                            torch.tensor(x.embedding, dtype=torch.float32).unsqueeze(0)
                         ).item(),
                         reverse=True  # Higher similarity first
                     )[:5]
@@ -62,7 +63,7 @@ class ChatController:
                 elif user_feedback.lower() == "not_satisfied_with_previous_results":
                     if not prompt_refinement:
                         self.blog_service.session_state["chat"].send_message(self.blog_service.initial_prompt)
-                    return self.blog_service.refine_prompt_helper(user_query)
+                    return self.blog_service.refine_prompt(user_query)
 
             elif intent == Intent.PRESENTATION_GENERATION.value:
                 return jsonify({"intent": intent, "message": "Presentation generation not yet implemented."}), 501

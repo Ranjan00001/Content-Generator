@@ -61,12 +61,13 @@ class BlogService:
                     return_tensors="pt",
                     padding=True,
                     truncation=True,
-                    max_length=4096
+                    max_length=512
                 )
 
                 with torch.no_grad():
                     outputs = self.embedding_model(**inputs)
                 embedding = torch.mean(outputs.last_hidden_state, dim=1).squeeze().tolist()
+
                 mongo_id = self.memory_service.store_content_in_mongo(
                     user_id="user123",
                     content_type="blog",
@@ -79,7 +80,7 @@ class BlogService:
                     embedding=embedding,
                     content_type="blog",
                     additional_info="tone: conversational",
-                    created_at=datetime.now()
+                    # created_at=datetime.now()
                 )
                 logger.info(f"Generated blog content stored in MongoDB with ID: {mongo_id}")
                 return jsonify({'Final Blog': final_text}), 200
