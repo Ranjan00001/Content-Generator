@@ -8,5 +8,5 @@ torch
 python-dotenv
 redis==5.0.0
 pymongo[srv]==4.7.0
-psycopg2==2.9.7
+psycopg2-binary
 pgvector

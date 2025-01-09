@@ -112,7 +112,7 @@ def generate_slide_prompts(topic, num_slides, layouts):
     Returns:
         str: Formatted prompt for the model.
     """
-    prompt = f"Generate {num_slides} slides on the topic '{topic}'. Use fixed JSON keys for response: title, subtitle, points, left_points, right_points, content, and image_path. Each slide must follow the provided layout type."
+    prompt = f"Generate {num_slides} slides on the topic '{topic}'. Use fixed JSON keys for response: title, subtitle, points, left_points, right_points, content, Layout, and image_path. Each slide must follow the provided layout type."
 
     for i in range(num_slides):
         slide_num = i + 1
@@ -129,6 +129,8 @@ def generate_slide_prompts(topic, num_slides, layouts):
         elif layout == SlideLayout.CONTENT_WITH_IMAGE:
             prompt += "Content: [\"Text line 1\", \"Text line 2\"]\n"
             prompt += "Image Path: \"<Image Placeholder>\"\n"
+
+        prompt += f"Layout: {layout}\n"
 
     prompt += "\nEnsure all keys are included and the content is concise and relevant."
     return prompt

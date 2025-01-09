@@ -175,7 +175,7 @@ class PresentationService:
         theme = themes.get(theme_name, themes["default"])
 
         for slide_content in content:
-            layout = slide_content.get("layout", SlideLayout.BULLET_POINTS.value)
+            layout = slide_content.get("Layout", SlideLayout.BULLET_POINTS.value)
 
             if layout == SlideLayout.TITLE.value:
                 slide = prs.slides.add_slide(prs.slide_layouts[0])

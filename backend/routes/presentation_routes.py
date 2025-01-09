@@ -91,7 +91,7 @@ class PresentationController:
 
         try:
             content = service.fetch_content_from_gemini(topic, num_slides, layouts)
-            # print('here',content)
+            print('here',content)
             prs = service.create_presentation(content, theme_name=theme)
         except Exception as e:
             logger.error("Error creating presentation: %s", e)
