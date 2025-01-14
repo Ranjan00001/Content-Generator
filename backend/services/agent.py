@@ -1,73 +1,75 @@
-from phidata.search import InternetSearch
-from models.gemini_model import GeminiModel
+# import os
+# from phi.agent import Agent
+# from phi.tools.googlesearch import GoogleSearch
+# # from phi.db import DatabaseRetriever
+# from dotenv import load_dotenv
+# from phi.model.google import Gemini
 
-class InternetSearchAgent:
-    def __init__(self, gemini_model: GeminiModel):
-        self.search_tool = InternetSearch()
-        self.gemini_model = gemini_model
+# load_dotenv()
+# GOOGLE_API_KEY = os.getenv('GEMINI_API_KEY')
 
-    def search(self, query: str):
-        results = self.search_tool.query(query)
-        summarized_results = self.gemini_model.summarize(results)
-        return summarized_results
-
-
-from phidata.db import DatabaseRetriever
-from models.gemini_model import GeminiModel
-
-class DatabaseRetrieverAgent:
-    def __init__(self, database_uri: str, gemini_model: GeminiModel):
-        self.db_retriever = DatabaseRetriever(database_uri)
-        self.gemini_model = gemini_model
-
-    def fetch_data(self, topic: str):
-        records = self.db_retriever.query(f"SELECT * FROM blogs WHERE topic LIKE '%{topic}%'")
-        insights = self.gemini_model.extract_key_points(records)
-        return insights
+# agent = Agent(
+#     tools=[GoogleSearch()],
+#     description="You are a news agent that helps users find the latest news.",
+#     model=Gemini(id="gemini-1.5-flash", api_key=GOOGLE_API_KEY),
+#     instructions=[
+#         "Given a topic by the user, respond with all the latest news items about that topic.",
+#         "Search in English and in Hindi.",
+#     ],
+#     show_tool_calls=True,
+#     debug_mode=True,
+# )
 
 
-from models.gemini_model import GeminiModel
+# # if __name__ == "__main__":
+# agent.print_response("Kumbh Mela", markdown=True)
 
-class UserInfoAgent:
-    def __init__(self, gemini_model: GeminiModel):
-        self.gemini_model = gemini_model
+from googlesearch import search
+import requests
+from bs4 import BeautifulSoup
 
-    def process_user_input(self, user_input: str):
-        refined_input = self.gemini_model.refine(user_input)
-        return refined_input
+def clean_html(html_content):
+    # Parse the HTML content
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Remove <script> and <style> tags
+    for script_or_style in soup(['script', 'style']):
+        script_or_style.decompose()
+    
+    # Remove unnecessary tags (e.g., comments, metadata)
+    for unwanted in soup(['noscript', 'iframe', 'svg', 'form', 'input']):
+        unwanted.decompose()
 
+    # Extract the main content (adjust selectors based on your needs)
+    main_content = soup.find('body')  # Use a more specific selector if needed
+    if main_content:
+        # Remove empty tags and clean text
+        for tag in main_content.find_all():
+            if not tag.text.strip():
+                tag.decompose()
 
-from agents.internet_search_agent import InternetSearchAgent
-from agents.database_retriever_agent import DatabaseRetrieverAgent
-from agents.user_info_agent import UserInfoAgent
-from models.gemini_model import GeminiModel
+    # Get cleaned text
+    cleaned_text = main_content.get_text(separator=' ', strip=True) if main_content else ''
+    
+    return cleaned_text
 
-def generate_blog(topic: str, user_input: str):
-    gemini_model = GeminiModel()
+query = "Give me latest information in Kumbh Mela"
+results = search(query, num_results=2, advanced=True)
 
-    # Initialize agents
-    internet_agent = InternetSearchAgent(gemini_model)
-    database_agent = DatabaseRetrieverAgent("database_uri_here", gemini_model)
-    user_info_agent = UserInfoAgent(gemini_model)
+# for result in results:
+#     print(result.description)
+    # print(result.__dict__)
 
-    # Gather data
-    internet_data = internet_agent.search(topic)
-    database_data = database_agent.fetch_data(topic)
-    user_data = user_info_agent.process_user_input(user_input)
+articles = []
+for result in results:
+    # print(result)
+    response = requests.get(result.url, timeout=1)
+    if response.status_code == 200:
+        # soup = BeautifulSoup(response.text, 'html.parser')
+        body = clean_html(response.text)
+        if body:
+            articles.append(body)
+    else:
+        print('error')
 
-    # Combine all insights
-    blog_content = f"""
-    {internet_data}
-
-    {database_data}
-
-    {user_data}
-    """
-    return blog_content
-
-if __name__ == "__main__":
-    topic = input("Enter blog topic: ")
-    user_input = input("Enter additional information: ")
-    blog = generate_blog(topic, user_input)
-    print("Generated Blog:")
-    print(blog)
+print(articles)

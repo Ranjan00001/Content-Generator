@@ -2,14 +2,17 @@ import logging
 from datetime import datetime
 from flask import jsonify
 from transformers import BertTokenizer, BertModel
+import torch.nn.functional as F
 import torch
 from models.generative_model import (
     get_model,
     extract_revised_prompt_and_questions,
     ModelResponseKeys,
     format_model_response,
+    getBlogGenerationPrompt,
 )
-from services.memory_service import MemoryService
+from services.memory_service import MemoryAgent
+from services.search_service import SearchAgent
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,7 +22,7 @@ class BlogService:
         self.tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
         self.embedding_model = BertModel.from_pretrained('bert-large-uncased')
         self.model = get_model()
-        self.memory_service = MemoryService()
+        self.memory_service = MemoryAgent()
         self.session_state = {
             "chat": self.model.start_chat(history=[]),
             "revisedPrompt": ''
@@ -97,3 +100,60 @@ class BlogService:
         except Exception as e:
             logger.error(f"Error refining prompt: {e}")
             return jsonify({"error": "Failed to refine prompt."}), 500
+
+class BlogService2:
+    def __init__(self):
+        """
+        Initialize BlogServices with a database handler and Gemini model.
+        """
+        self.memory_service = MemoryAgent()
+        self.search_service = SearchAgent()
+
+    def getPreviousContents(self, query):
+        tokenizer = BertTokenizer.from_pretrained('bert-large-uncased')
+        embedding_model = BertModel.from_pretrained('bert-large-uncased')
+        inputs = tokenizer(
+                    query,
+                    return_tensors="pt",
+                    padding=True,
+                    truncation=True,
+                    max_length=512
+        )
+
+        with torch.no_grad():
+            outputs = embedding_model(**inputs)
+        query_embedding = torch.mean(outputs.last_hidden_state, dim=1).squeeze().tolist()
+
+        embeddings = self.memory_service.query_embeddings(user_id="user123", content_type="blog")
+
+        nearest_embeddings = sorted(
+            embeddings,
+            key=lambda x: F.cosine_similarity(
+            torch.tensor(query_embedding, dtype=torch.float32).unsqueeze(0),
+            torch.tensor(x.embedding, dtype=torch.float32).unsqueeze(0)
+            ).item(), reverse=True
+        )[:5]
+
+        results = []
+        for e in nearest_embeddings:
+            mongo_doc = self.memory_service.query_content_from_mongo(e.mongo_doc_id)
+            if mongo_doc:
+                results.append({"id": e.mongo_doc_id, "content": mongo_doc.get("content")})
+
+        return results
+
+    def get_response_text(self, response):
+        try:
+            return response['candidates'][0]['content']['parts'][0]['text']
+        except (IndexError, KeyError):
+            return "No response available from the model."
+
+    def generateBlog(self, query):
+        a = self.getPreviousContents(query)
+        b = self.search_service.fetch_articles(query)
+        print(a, b)
+        final_prompt = getBlogGenerationPrompt(query, a, b)
+        final_response = get_model().generate_content(final_prompt).to_dict()
+        final_text = self.get_response_text(final_response)
+
+        return final_text

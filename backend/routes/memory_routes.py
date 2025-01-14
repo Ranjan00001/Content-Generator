@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.memory_service import MemoryService
+from services.memory_service import MemoryAgent
 import logging
 
 # Configure logging
@@ -14,7 +14,7 @@ class MemoryController:
 
     def query_content(self, content_type, mongo_doc_id):
         try:
-            content = MemoryService.query_content_from_mongo(mongo_doc_id)
+            content = MemoryAgent.query_content_from_mongo(mongo_doc_id)
             if content and content.get("content_type") == content_type:
                 return jsonify(content), 200
             else:
@@ -25,7 +25,7 @@ class MemoryController:
 
     def get_logs(self, embedding_id):
         try:
-            logs = MemoryService.query_action_logs(embedding_id)
+            logs = MemoryAgent.query_action_logs(embedding_id)
             if logs:
                 return jsonify(logs), 200
             else:

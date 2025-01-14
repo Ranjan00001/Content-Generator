@@ -134,3 +134,39 @@ def generate_slide_prompts(topic, num_slides, layouts):
 
     prompt += "\nEnsure all keys are included and the content is concise and relevant."
     return prompt
+
+
+def getBlogGenerationPrompt(query, database_results, internet_results):
+    return '''You are a skilled content generator tasked with writing an engaging, informative, and well-structured blog post. 
+
+    **Objective**: Create a detailed blog on the topic: "{query}". Ensure the content is insightful, cohesive, and tailored to the reader's interests.
+
+    **Resources for the Blog**:
+    1. **Database Articles**: These articles provide authoritative and pre-verified information on the topic. They are reliable and should be integrated thoughtfully into the blog.
+        - {database_results}
+    2. **Internet Articles**: These articles provide the latest insights, trends, and broader perspectives on the topic. Use them to bring freshness and relevancy to the content.
+        - {internet_results}
+
+    **Instructions**:
+    1. **Introduction**: Start with a compelling hook that captures the reader\'s attention. Briefly introduce the topic and explain why it\'s important or relevant.
+    2. **Main Content**: Use the provided resources to craft well-organized sections. Ensure:
+    - The database articles are used as foundational sources.
+    - The internet articles add value through recent trends, examples, or perspectives.
+    - Cite examples, facts, or statistics wherever appropriate to add credibility.
+    3. **Tone and Style**:
+    - Write in a conversational yet professional tone.
+    - Use clear, concise language with well-structured paragraphs.
+    - Ensure a logical flow between sections, maintaining reader engagement.
+    4. **Conclusion**: Summarize key points and provide actionable takeaways or a thought-provoking closing remark.
+    5. **Creativity**: Feel free to enrich the blog with anecdotes, metaphors, or analogies to make it relatable.
+
+    **Format**:
+    - Use headings and subheadings to organize content (H1, H2, H3).
+    - Include bullet points or numbered lists where appropriate for readability.
+
+    Generate the blog based on the above details, ensuring it is insightful, engaging, and exceeds reader expectations.
+
+    ---
+
+    **Topic**: "{query}"
+    '''

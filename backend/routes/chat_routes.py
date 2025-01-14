@@ -4,10 +4,10 @@ import torch.nn.functional as F
 from transformers import BertTokenizer, BertModel
 # from datetime import datetime
 
-from services.memory_service import MemoryService
+from services.memory_service import MemoryAgent
 from models.generative_model import get_model, reason_out_intent, Intent
 # from models.generative_model import extract_revised_prompt_and_questions, ModelResponseKeys, format_model_response
-from services.blog_service import BlogService
+from services.blog_service import BlogService, BlogService2
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +21,8 @@ class ChatController:
         self.blueprint = Blueprint("chat_routes", __name__)
         self.blueprint.add_url_rule("/", view_func=self.chat, methods=["POST"])
         self.blueprint.add_url_rule("/store", view_func=self._store_in_memory, methods=["POST"])
-        self.memory_service = MemoryService()
+        self.blueprint.add_url_rule("/test", view_func=self.testBlog, methods=["POST"])
+        self.memory_service = MemoryAgent()
         self.blog_service = BlogService()  # Initialize BlogController
 
     def chat(self):
@@ -111,6 +112,12 @@ class ChatController:
         logger.info(f"Generated blog content stored in MongoDB with ID: {mongo_id}")    
         return jsonify({'message':f"stored in database successfully, blog content stored in MongoDB with ID: {mongo_id}"}), 200
 
+    def testBlog(self):
+        data = request.json
+        query = data.get('query', '')
+        res = b.generateBlog(query)
+        return jsonify({"result":res}), 200
 
+b = BlogService2()
 chat_controller = ChatController()
 chat_routes = chat_controller.blueprint

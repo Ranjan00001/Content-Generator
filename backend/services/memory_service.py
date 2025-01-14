@@ -33,7 +33,7 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
-class MemoryService:
+class MemoryAgent:
     @staticmethod
     def store_content_in_mongo(user_id, content_type, content, additional_info):
         """Store content in MongoDB and return its ID."""
